@@ -49,13 +49,14 @@ def setFlags():
 
 def displayResponse(verbose: bool, prompt: str, r):
     if verbose:
-        print("Prompt tokens:", r.usage_metadata.prompt_token_count)
-        print(f"Response tokens: {r.usage_metadata.candidates_token_count}.")
-        print(f"user: {prompt}")
-        print(f"model: {r.text}")
+        print(f"User prompt: {prompt}")
+        print(f"Prompt tokens: {r.usage_metadata.prompt_token_count}")
+        print(f"Response tokens: {r.usage_metadata.candidates_token_count}")
+        print(f"{r.text}")
     else:
-        print(f"user: {prompt}")
-        print(f"model: {r.text}")
+        # print(f"user: {prompt}")
+        # print(f"model: {r.text}")
+        print(f"{r.text}")
 
 
 if __name__ == "__main__":
