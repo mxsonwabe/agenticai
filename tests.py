@@ -1,17 +1,26 @@
-from functions.get_files_info import get_files_info
+from functions.get_files_info import get_file_content, get_files_info
 
-subject = "."
-print(f"Results for '{subject}' directory:")
-print(get_files_info("calculator", "."))
+subject = "lorem.txt"
+print(f"Results for '{subject}' directory: calculator")
+# print(get_files_info("calculator", "."))
+print(get_file_content("calculator", subject))
 
-subject = "pkg"
-print(f"Results for '{subject}' directory:")
-print(get_files_info("calculator", subject))
+subject = "main.py"
+print(f"\nResults for '{subject}' directory: calculator")
+# print(get_files_info("calculator", subject))
+print(get_file_content("calculator", "main.py"))
 
-subject = "/bin"
-print(f"Results for '{subject}' directory:")
-print(get_files_info("calculator", subject))
+# subject = "/bin"
+subject= "pkg/calculator.py"
+print(f"\nResults for '{subject}' directory: pkg/calculator")
+# print(get_files_info("calculator", subject))
+print(get_file_content("calculator", "pkg/calculator.py"))
 
-subject = "../"
-print(f"Results for '{subject}' directory:")
-print(get_files_info("calculator", subject))
+subject = "/bin/cat"
+print(f"\nResults for '{subject}' directory: /bin/cat")
+# print(get_files_info("calculator", subject))
+print(get_file_content("calculator", "/bin/cat"))
+
+subject = "pkg/does_not_exist"
+print(f"\nResults for '{subject}' directory: pkg/does_not_exist")
+print(get_file_content("calculator", "pkg/does_not_exist.py"))
