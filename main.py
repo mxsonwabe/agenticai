@@ -8,12 +8,12 @@ from google.genai import types
 parser = argparse.ArgumentParser(
     description = "CLI code agent"
 )
+group = parser.add_mutually_exclusive_group()
 
 def main():
     load_dotenv()
     api_key = os.environ.get("GEMINI_API_KEY")
     client = genai.Client(api_key=api_key)
-    
     setUserPrompt()
     setFlags()
 
@@ -30,7 +30,7 @@ def main():
             model= "gemini-2.0-flash-001",
             contents= messages
         )
-        displayResponse(args.verbose, args.prompt, response)
+        displayResponse(args, verbose, args.prompt, response)
 
 def setUserPrompt():
     parser.add_argument(
@@ -40,23 +40,32 @@ def setUserPrompt():
     )
 
 def setFlags():
-    parser.add_argument(
+    group.add_argument(
         "-v",
         "--verbose",
         help = "show more info",
         action = "store_true"
     )
+    group.add_argument(
+        '-q',
+        "--quiet",
+        help = "display output only",
+        action = "store_true",
+    )
 
-def displayResponse(verbose: bool, prompt: str, r):
-    if verbose:
+def displayResponse(args, prompt: str, r):
+    if args.verbose:
         print(f"User prompt: {prompt}")
         print(f"Prompt tokens: {r.usage_metadata.prompt_token_count}")
         print(f"Response tokens: {r.usage_metadata.candidates_token_count}")
         print(f"{r.text}")
-    else:
+    elif args.quiet:
         # print(f"user: {prompt}")
         # print(f"model: {r.text}")
         print(f"{r.text}")
+    else:
+        print(f"User: {prompt}")
+        print(f"Model: {r.text}")
 
 
 if __name__ == "__main__":
