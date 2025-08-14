@@ -17,12 +17,11 @@ def run_python_file(working_directory, file_path, args = []):
         return f'Error: "{file_path}" is not a Python file.'
     
     try:
-        cmd = args
-        cmd.insert(0, 'python')
-        cmd.insert(1, f_name)
+        cmd = ["python", f_name] + args
         # process_return (val) => execute file w/ python
-        proc_ret = subprocess.run(
+        process_ret = subprocess.run(
             cmd,
+            cwd=cwd,
             capture_output=True,
             timeout=30,
             text=True,
@@ -31,13 +30,18 @@ def run_python_file(working_directory, file_path, args = []):
         val = f"Error: executing Python file: {e}"
         return val
 
-    if proc_ret.returncode == 0:
-        if proc_ret.stdout == '':
+    # check if chld process success
+    if process_ret.returncode == 0:
+        if process_ret.stdout.strip() == '':
             val = "No output produced"
         else:
-            val = f"STDOUT: {proc_ret.stdout}\nSTDERR: {proc_ret.stderr}"
+            val = f"STDOUT:\n{process_ret.stdout}"
+            if process_ret.stderr.strip() != '':
+                val += f"\nSTDERR:\n{process_ret.stderr}"
+        return val
+    # child process failure
     else:
-        val = f"STDOUT: {proc_ret.stdout}\nSTDERR: {proc_ret.stderr}\n"
-        val += f"Process exited with code {proc_ret.returncode}"
+        val = f"STDOUT: {process_ret.stdout}\nSTDERR: {process_ret.stderr}\n"
+        val += f"Process exited with code {process_ret.returncode}"
 
     return val
