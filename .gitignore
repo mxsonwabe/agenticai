@@ -6,8 +6,13 @@ dist/
 wheels/
 *.egg-info
 
+
+.gitignore
 # Virtual environments
 .venv
 
 # Enviroment variables
 .env
+
+# just notes
+notes.typ

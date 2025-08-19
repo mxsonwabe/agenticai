@@ -1,4 +1,6 @@
 import os
+# import types
+from google.genai import types
 # from pkg.config import MAX_CHARS
 MAX_CHARS = 10000
 
@@ -7,13 +9,41 @@ MAX_CHARS = 10000
 # print("".join(str))
 # print("===== TEST: END =====")
 
+# define a built-in type?" Like how you would a struck in go
+
+schema_get_files_info = types.FunctionDeclaration(
+    name="get_files_info",
+    description="Lists files in the specified directory along with their sizes, constrained to the working directory.",
+    # defines the format of the input and output data
+    parameters=types.Schema(    # what the function -> get_files_info gets called with
+        type=types.Type.OBJECT,  # it gets called with an OBJ -> {} as an argument
+        properties={
+            "directory": types.Schema(
+                type= types.Type.STRING,  # describes the data type
+                description="The directory to list files from, relative to the working directory. If not provided, lists files in the working directory itself."
+            ),
+        },                       # the Final OBJ -> {
+                                 #                      directory: "some_dir" <- is a `string` type
+                                 #                      ... other members of the property
+                                 #                  }
+                                 # property can have more than one member
+    ),  # -> can have more than one parameter
+)
+
+available_function = types.Tool(
+    function_declarations=[
+        schema_get_files_info,  # again, defines how to call _the function/our_tool
+    ]
+)
+
+
 def get_files_info(working_directory, directory="."):
     cwd = os.path.abspath(working_directory)
     path = os.path.join(working_directory, directory)
     full_path = os.path.abspath(path)
 
     if not (full_path == cwd or full_path.startswith(cwd + os.sep)):
-        return f'Error: Cannot list "{directory}" as it is outside the permitted working directory'    
+        return f'Error: Cannot list "{directory}" as it is outside the permitted working directory'
 
     if os.path.isdir(full_path):
         contents = os.listdir(full_path)
@@ -27,6 +57,7 @@ def get_files_info(working_directory, directory="."):
         return "".join(str)
     else:
         return f'Error: "{directory}" is not a directory\n'
+
 
 def get_file_content(working_directory, file_path):
     cwd = os.path.abspath(working_directory)
@@ -48,6 +79,7 @@ def get_file_content(working_directory, file_path):
         return file_contents
     else:
         return f'Error: File not found or is not a regular file: "{file_path}"'
+
 
 def write_file(working_directory, file_path, content):
     cwd = os.path.abspath(working_directory)
